@@ -1,0 +1,9 @@
+# Build
+dist
+
+# Istanbul
+.nyc_output
+coverage
+
+# Node modules
+node_modules

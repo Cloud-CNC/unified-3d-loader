@@ -1,0 +1,53 @@
+{
+  "name": "unified-3d-loader",
+  "version": "1.0.0",
+  "description": "Unified 3D file loader. Intended for use as a frontend for triangle-based 3D processing.",
+  "type": "module",
+  "main": "dist/cjs/index.js",
+  "module": "dist/es/index.js",
+  "types": "dist/es/index.d.ts",
+  "scripts": {
+    "build": "rollup -c",
+    "coverage": "nyc --reporter=lcov npm run test",
+    "lint": "eslint . --ext .ts",
+    "test": "mocha -r ts-node/register --colors --exit --timeout 60000 src/**/*.spec.ts",
+    "watch": "rollup -c -w"
+  },
+  "dependencies": {
+    "earcut": "^2.2.2",
+    "fast-xml-parser": "^3.17.4",
+    "jszip": "^3.5.0",
+    "lodash": "^4.17.19",
+    "mathjs": "^7.1.0"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^14.0.0",
+    "@rollup/plugin-node-resolve": "^8.4.0",
+    "@types/chai": "^4.2.12",
+    "@types/earcut": "^2.1.1",
+    "@types/lodash": "^4.14.159",
+    "@types/mathjs": "^6.0.5",
+    "@types/mocha": "^8.0.1",
+    "@typescript-eslint/eslint-plugin": "^3.8.0",
+    "@typescript-eslint/parser": "^3.8.0",
+    "chai": "^4.2.0",
+    "eslint": "^7.6.0",
+    "mocha": "^8.1.1",
+    "nyc": "^15.1.0",
+    "rollup": "^2.23.1",
+    "rollup-plugin-terser": "^6.1.0",
+    "rollup-plugin-typescript2": "^0.27.2",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.7"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cloud-CNC/unified-3d-loader.git"
+  },
+  "author": "Cloud-CNC",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Cloud-CNC/unified-3d-loader/issues"
+  },
+  "homepage": "https://github.com/Cloud-CNC/unified-3d-loader#readme"
+}

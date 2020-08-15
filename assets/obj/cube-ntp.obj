@@ -1,0 +1,22 @@
+#Group format, non-triangular polygon cube OBJ
+
+#Group definition
+g CUBE
+
+#Vertices (8)
+v  0.0  0.0  0.0
+v  0.0  0.0  1.0
+v  0.0  1.0  0.0
+v  0.0  1.0  1.0
+v  1.0  0.0  0.0
+v  1.0  0.0  1.0
+v  1.0  1.0  0.0
+v  1.0  1.0  1.0
+
+#Faces (vertice indice/vertice texture indice/vertice normal indice) (6)
+f  1//  2//  4//  3//
+f  7//  8//  6//  5//
+f  1//  5//  6//  2//
+f  2//  6//  8//  4//
+f  4//  8//  7//  3//
+f  3//  7//  5//  1//
