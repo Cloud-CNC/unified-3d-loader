@@ -50,7 +50,12 @@ describe('3mf parser', () =>
 {
   it('will parse single object files', async () =>
   {
-    const files = await parse(cube.single);
+    let previous = -1;
+    const files = await parse(cube.single, progress =>
+    {
+      expect(progress).to.be.greaterThan(previous);
+      previous = progress;
+    });
 
     expect(files).to.have.length(1);
 
@@ -68,7 +73,12 @@ describe('3mf parser', () =>
 
   it('will parse files with big units', async () =>
   {
-    const files = await parse(cube.big);
+    let previous = -1;
+    const files = await parse(cube.big, progress =>
+    {
+      expect(progress).to.be.greaterThan(previous);
+      previous = progress;
+    });
 
     expect(files).to.have.length(1);
 
@@ -111,7 +121,12 @@ describe('3mf parser', () =>
       vectors.push(...vector);
     }
 
-    const files = await parse(cube.transform);
+    let previous = -1;
+    const files = await parse(cube.transform, progress =>
+    {
+      expect(progress).to.be.greaterThan(previous);
+      previous = progress;
+    });
 
     expect(files).to.have.length(1);
 
@@ -132,7 +147,12 @@ describe('3mf parser', () =>
   {
     const benchy = readFileSync(resolve('assets/3mf/benchy.3mf'));
 
-    const files = await parse(benchy);
+    let previous = -1;
+    const files = await parse(benchy, progress =>
+    {
+      expect(progress).to.be.greaterThan(previous);
+      previous = progress;
+    });
 
     expect(files).to.have.length(1);
 

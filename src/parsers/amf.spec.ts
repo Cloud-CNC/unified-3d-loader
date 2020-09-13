@@ -49,7 +49,12 @@ describe('amf parser', () =>
 {
   it('will parse ascii files', async () =>
   {
-    const files = await parse(cube.ascii);
+    let previous = -1;
+    const files = await parse(cube.ascii, progress =>
+    {
+      expect(progress).to.be.greaterThan(previous);
+      previous = progress;
+    });
 
     expect(files).to.have.length(1);
 
@@ -81,7 +86,12 @@ describe('amf parser', () =>
 
   it('will parse files with big units', async () =>
   {
-    const files = await parse(cube.big);
+    let previous = -1;
+    const files = await parse(cube.big, progress =>
+    {
+      expect(progress).to.be.greaterThan(previous);
+      previous = progress;
+    });
 
     expect(files).to.have.length(1);
 
@@ -114,7 +124,12 @@ describe('amf parser', () =>
 
   it('will parse compressed files', async () =>
   {
-    const files = await parse(cube.compressed);
+    let previous = -1;
+    const files = await parse(cube.compressed, progress =>
+    {
+      expect(progress).to.be.greaterThan(previous);
+      previous = progress;
+    });
 
     expect(files).to.have.length(1);
 
@@ -146,7 +161,8 @@ describe('amf parser', () =>
 
   it('will parse compressed multi object files', async () =>
   {
-    const files = await parse(cube.multi);
+    //NOTE: Progress reporting with multi object files is not supported
+    const files = await parse(cube.multi, () => null);
 
     expect(files).to.have.length(2);
 
@@ -206,7 +222,12 @@ describe('amf parser', () =>
   {
     const benchy = readFileSync(resolve('assets/amf/benchy.amf'));
 
-    const files = await parse(benchy);
+    let previous = -1;
+    const files = await parse(benchy, progress =>
+    {
+      expect(progress).to.be.greaterThan(previous);
+      previous = progress;
+    });
 
     expect(files).to.have.length(1);
 

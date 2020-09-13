@@ -6,7 +6,7 @@
 //Imports
 import {contains} from '../utils/array';
 import {extractLocal, extractGlobal} from '../utils/regex';
-import {Mesh} from '../types';
+import {Mesh, ProgressEmitter} from '../types';
 
 /**
  * Types of STL files
@@ -51,7 +51,7 @@ export const categorizeFile = (buffer: ArrayBuffer): StlFormats =>
  * Parse an STL file
  * @param raw 
  */
-export const parse = (raw: ArrayBuffer): Mesh<'non-indexed', 'non-indexed'>[] =>
+export const parse = (raw: ArrayBuffer, progress: ProgressEmitter): Mesh<'non-indexed', 'non-indexed'>[] =>
 {
   //Categorize the file
   const category = categorizeFile(raw);
@@ -92,7 +92,7 @@ export const parse = (raw: ArrayBuffer): Mesh<'non-indexed', 'non-indexed'>[] =>
         //Parse facets
         const facets = extractGlobal(solid, patterns.facet, new Error('[STL] Failed to parse facets!'));
 
-        for (const [facet] of facets)
+        for (const [facetIndex, [facet]] of facets.entries())
         {
           //Parse normal
           const normal = extractLocal(facet, patterns.normal, new Error('[STL] Failed to parse normal!'));
@@ -124,6 +124,9 @@ export const parse = (raw: ArrayBuffer): Mesh<'non-indexed', 'non-indexed'>[] =>
               mesh.vertices.push(x, y, z);
             }
           }
+
+          //Emit progress
+          progress(facetIndex / facets.length);
         }
 
         //Add mesh to meshes
@@ -164,6 +167,9 @@ export const parse = (raw: ArrayBuffer): Mesh<'non-indexed', 'non-indexed'>[] =>
         mesh.vertices.push(dataView.getFloat32(offset + 36, true), dataView.getFloat32(offset + 40, true), dataView.getFloat32(offset + 44, true));
 
         //NOTE: Remaining 2 bytes are proprietary and not standardized
+
+        //Emit progress
+        progress(face / faces);
       }
 
       return [mesh];

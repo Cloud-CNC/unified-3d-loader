@@ -4,7 +4,7 @@
 
 //Imports
 import {extractMetadata} from '../utils/metadata';
-import {Mesh} from '../types';
+import {Mesh, ProgressEmitter} from '../types';
 import {parse as parseXML} from 'fast-xml-parser';
 
 //@ts-ignore See https://github.com/Stuk/jszip/issues/673#issuecomment-625211873 for more information
@@ -14,7 +14,7 @@ import JSZip from 'jszip/dist/jszip';
  * Parse an AMF file
  * @param raw 
  */
-export const parse = async (raw: ArrayBuffer): Promise<Mesh<'none', 'indexed'>[]> =>
+export const parse = async (raw: ArrayBuffer, progress: ProgressEmitter): Promise<Mesh<'none', 'indexed'>[]> =>
 {
   const files: string[] = [];
   const meshes: Mesh<'none', 'indexed'>[] = [];
@@ -130,7 +130,7 @@ export const parse = async (raw: ArrayBuffer): Promise<Mesh<'none', 'indexed'>[]
                 if (key3 == 'vertices')
                 {
                   //Iterate over fourth level elements
-                  for (const [key4, value4] of Object.entries(<object>value3))
+                  for (const [vertexIndex, [key4, value4]] of Object.entries(<object>value3).entries())
                   {
                     //Vertex
                     if (key4 == 'vertex')
@@ -149,13 +149,16 @@ export const parse = async (raw: ArrayBuffer): Promise<Mesh<'none', 'indexed'>[]
                         }
                       }
                     }
+
+                    //Emit progress
+                    progress((vertexIndex / Object.keys(value3).length) / 2);
                   }
                 }
                 //Indices
                 else if (key3 == 'volume')
                 {
                   //Iterate over fourth level elements
-                  for (const [key4, value4] of Object.entries(<object>value3))
+                  for (const [triangleIndex, [key4, value4]] of Object.entries(<object>value3).entries())
                   {
                     if (key4 == 'triangle')
                     {
@@ -171,12 +174,14 @@ export const parse = async (raw: ArrayBuffer): Promise<Mesh<'none', 'indexed'>[]
                         mesh.vertices.indices.push(v1, v2, v3);
                       }
                     }
+
+                    //Emit progress
+                    progress(((triangleIndex / Object.keys(value3).length) / 2) + 0.5);
                   }
                 }
               }
             }
           }
-
 
           //Get metadata
           mesh.metadata = extractMetadata(value1);

@@ -67,6 +67,13 @@ describe('main entry file', () =>
   {
     const loader = new Unified3dLoader();
 
+    let previous = -1;
+    loader.on('progress', progress =>
+    {
+      expect(progress).to.be.greaterThan(previous);
+      previous = progress;
+    });
+
     const objects = await loader.load(rawCube, FileFormats.OBJ, {
       index: {
         normals: true,
@@ -140,6 +147,13 @@ describe('main entry file', () =>
   it('will load files and output non-indexed meshes', async () =>
   {
     const loader = new Unified3dLoader();
+
+    let previous = -1;
+    loader.on('progress', progress =>
+    {
+      expect(progress).to.be.greaterThan(previous);
+      previous = progress;
+    });
 
     const objects = await loader.load(rawCube, FileFormats.OBJ, {
       index: {

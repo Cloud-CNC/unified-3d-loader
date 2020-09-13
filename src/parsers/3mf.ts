@@ -5,7 +5,7 @@
 //Imports
 import {extractGlobal} from '../utils/regex';
 import {extractMetadata} from '../utils/metadata';
-import {Mesh} from '../types';
+import {Mesh, ProgressEmitter} from '../types';
 import {multiply} from 'mathjs';
 import {parse as parseXML} from 'fast-xml-parser';
 import {round} from 'lodash';
@@ -17,7 +17,7 @@ import JSZip from 'jszip/dist/jszip';
  * Parse a 3MF file
  * @param raw 
  */
-export const parse = async (raw: ArrayBuffer): Promise<Mesh<'none', 'indexed'>[]> =>
+export const parse = async (raw: ArrayBuffer, progress: ProgressEmitter): Promise<Mesh<'none', 'indexed'>[]> =>
 {
   const files: string[] = [];
   const meshes: Mesh<'none', 'indexed'>[] = [];
@@ -184,7 +184,7 @@ export const parse = async (raw: ArrayBuffer): Promise<Mesh<'none', 'indexed'>[]
                     if (key4 == 'vertices')
                     {
                       //Iterate over fifth level elements
-                      for (const [key5, value5] of Object.entries(<object>value4))
+                      for (const [vertexIndex, [key5, value5]] of Object.entries(<object>value4).entries())
                       {
                         //Vertex
                         if (key5 == 'vertex')
@@ -218,13 +218,16 @@ export const parse = async (raw: ArrayBuffer): Promise<Mesh<'none', 'indexed'>[]
                             }
                           }
                         }
+
+                        //Emit progress
+                        progress((vertexIndex / Object.keys(value3).length) / 2);
                       }
                     }
                     //Indices
                     else if (key4 == 'triangles')
                     {
                       //Iterate over fifth level elements
-                      for (const [key5, value5] of Object.entries(<object>value4))
+                      for (const [triangleIndex, [key5, value5]] of Object.entries(<object>value4).entries())
                       {
                         //Triangle
                         if (key5 == 'triangle')
@@ -240,6 +243,9 @@ export const parse = async (raw: ArrayBuffer): Promise<Mesh<'none', 'indexed'>[]
                             mesh.vertices.indices.push(v1, v2, v3);
                           }
                         }
+
+                        //Emit progress
+                        progress(((triangleIndex / Object.keys(value3).length) / 2) + 0.5);
                       }
                     }
                   }

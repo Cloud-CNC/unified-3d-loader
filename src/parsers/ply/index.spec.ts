@@ -49,7 +49,12 @@ describe('ply parser', () =>
 {
   it('will parse an ascii file', () =>
   {
-    const files = parse(cube.ascii);
+    let previous = -1;
+    const files = parse(cube.ascii, progress =>
+    {
+      expect(progress).to.be.greaterThan(previous);
+      previous = progress;
+    });
 
     expect(files).to.have.length(1);
 
@@ -59,7 +64,12 @@ describe('ply parser', () =>
 
   it('will parse a binary file (big endian encoding)', () =>
   {
-    const files = parse(cube.binaryBE);
+    let previous = -1;
+    const files = parse(cube.binaryBE, progress =>
+    {
+      expect(progress).to.be.greaterThan(previous);
+      previous = progress;
+    });
 
     expect(files).to.have.length(1);
 
@@ -70,7 +80,12 @@ describe('ply parser', () =>
 
   it('will parse a binary file (little endian encoding)', () =>
   {
-    const files = parse(cube.binaryLE);
+    let previous = -1;
+    const files = parse(cube.binaryLE, progress =>
+    {
+      expect(progress).to.be.greaterThan(previous);
+      previous = progress;
+    });
 
     expect(files).to.have.length(1);
 
@@ -81,7 +96,12 @@ describe('ply parser', () =>
 
   it('will parse a non-triangular-polygon file', () =>
   {
-    const files = parse(cube.ntp);
+    let previous = -1;
+    const files = parse(cube.ntp, progress =>
+    {
+      expect(progress).to.be.greaterThan(previous);
+      previous = progress;
+    });
 
     expect(files).to.have.length(1);
 
@@ -108,7 +128,12 @@ describe('ply parser', () =>
   {
     const benchy = readFileSync(resolve('assets/ply/benchy.ply'));
 
-    const files = parse(benchy);
+    let previous = -1;
+    const files = parse(benchy, progress =>
+    {
+      expect(progress).to.be.greaterThan(previous);
+      previous = progress;
+    });
 
     expect(files).to.have.length(1);
 

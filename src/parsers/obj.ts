@@ -5,7 +5,7 @@
 //Imports
 import {deindex, index} from '../utils/indice';
 import {extractLocal, extractGlobal} from '../utils/regex';
-import {Mesh} from '../types';
+import {Mesh, ProgressEmitter} from '../types';
 import ntp from '../interpreters/ntp';
 
 /**
@@ -21,7 +21,7 @@ export type ObjFormats = 'group-only' | 'object-only' | 'hybrid';
  * Parse an OBJ file
  * @param raw 
  */
-export const parse = (raw: ArrayBuffer, format: ObjFormats): Mesh<'none', 'indexed'>[] =>
+export const parse = (raw: ArrayBuffer, format: ObjFormats, progress: ProgressEmitter): Mesh<'none', 'indexed'>[] =>
 {
   //Translate to string
   const file = new TextDecoder().decode(raw);
@@ -52,7 +52,7 @@ export const parse = (raw: ArrayBuffer, format: ObjFormats): Mesh<'none', 'index
   //Parse lines
   const lines = extractGlobal(file, patterns.line, new Error('[OBJ] Failed to parse lines!'));
 
-  for (const [line, type] of lines)
+  for (const [lineIndex, [line, type]] of lines.entries())
   {
     switch (type)
     {
@@ -140,6 +140,9 @@ export const parse = (raw: ArrayBuffer, format: ObjFormats): Mesh<'none', 'index
         break;
       }
     }
+
+    //Emit progress
+    progress(lineIndex / lines.length);
   }
 
   return meshes;

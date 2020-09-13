@@ -6,7 +6,7 @@
 import {categorizeFile, parseElements} from './utils';
 import {deindex, index} from '../../utils/indice';
 import {extractLocal, extractGlobal} from '../../utils/regex';
-import {Mesh} from '../../types';
+import {Mesh, ProgressEmitter} from '../../types';
 import ntp from '../../interpreters/ntp';
 
 //Patterns
@@ -19,7 +19,7 @@ const patterns = {
 /**
  * Parse a PLY file
  */
-export const parse = (raw: ArrayBuffer): Mesh<'none', 'indexed'>[] =>
+export const parse = (raw: ArrayBuffer, progress: ProgressEmitter): Mesh<'none', 'indexed'>[] =>
 {
   //This mesh will have its info filled out (eventually)
   const mesh: Mesh<'none', 'indexed'> = {
@@ -102,7 +102,8 @@ export const parse = (raw: ArrayBuffer): Mesh<'none', 'indexed'>[] =>
       //Split lines and parse
       const lines = extractGlobal(body, patterns.line, new Error('[PLY] Failed to parse file body!'));
 
-      //Add vertices and indices 
+      //Add vertices and indices
+      const lineLength = Object.keys(lines).length;
       for (const [i, [line]] of lines.entries())
       {
         //Add vertice
@@ -134,6 +135,9 @@ export const parse = (raw: ArrayBuffer): Mesh<'none', 'indexed'>[] =>
           //Deal with the vertices
           handleVerticeIndices(verticeIndices);
         }
+
+        //Emit progress
+        progress(i / lineLength);
       }
 
       break;
@@ -141,7 +145,7 @@ export const parse = (raw: ArrayBuffer): Mesh<'none', 'indexed'>[] =>
 
     case 'binary-be':
     case 'binary-le': {
-      const littleEndian = category == 'binary-le';
+      const littleEndian = (category == 'binary-le');
 
       //Slice raw to get body as an array buffer
       const bodyArrayBuffer = raw.slice(raw.byteLength - body.length);
@@ -194,13 +198,17 @@ export const parse = (raw: ArrayBuffer): Mesh<'none', 'indexed'>[] =>
       }
 
       //Iterate over vertices
-      for (let i = verticeOffset; i <  verticeOffset + (12 * verticeCount); i += 12)
+      const verticeMax = verticeOffset + (12 * verticeCount);
+      for (let i = verticeOffset; i < verticeMax; i += 12)
       {
         const x = dataView.getFloat32(i, littleEndian);
         const y = dataView.getFloat32(i + 4, littleEndian);
         const z = dataView.getFloat32(i + 8, littleEndian);
 
         mesh.vertices.vectors.push(x, y, z);
+
+        //Emit progress
+        progress((i / verticeMax) / 2);
       }
 
       //Iterate over faces (Dynamic iteration width controlled by number of vertices in each face)
@@ -222,6 +230,9 @@ export const parse = (raw: ArrayBuffer): Mesh<'none', 'indexed'>[] =>
 
         //Update offset (1 byte face count, 4 bytes per vertice indice)
         offset2 += 1 + (4 * count);
+
+        //Emit progress
+        progress(((i / faceCount) / 2) + 0.5);
       }
 
       break;

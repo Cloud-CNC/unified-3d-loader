@@ -85,6 +85,8 @@ export const FileFormats: {
   }
 };
 
+export type ProgressEmitter = (progress: number) => void;
+
 /**
  * The vector list type
  * * `none`: No vector list

@@ -82,7 +82,12 @@ describe('stl parser', () =>
 
   it('will parse an ascii file', () =>
   {
-    const file = parse(cube.ascii);
+    let previous = -1;
+    const file = parse(cube.ascii, progress =>
+    {
+      expect(progress).to.be.greaterThan(previous);
+      previous = progress;
+    });
 
     expect(file).to.have.length(1);
 
@@ -94,7 +99,12 @@ describe('stl parser', () =>
 
   it('will parse a binary file', () =>
   {
-    const file = parse(cube.binary);
+    let previous = -1;
+    const file = parse(cube.binary, progress =>
+    {
+      expect(progress).to.be.greaterThan(previous);
+      previous = progress;
+    });
 
     expect(file).to.have.length(1);
 
@@ -108,7 +118,12 @@ describe('stl parser', () =>
   {
     const benchy = readFileSync(resolve('assets/stl/benchy.stl'));
 
-    const files = parse(benchy);
+    let previous = -1;
+    const files = parse(benchy, progress =>
+    {
+      expect(progress).to.be.greaterThan(previous);
+      previous = progress;
+    });
 
     expect(files).to.have.length(1);
 

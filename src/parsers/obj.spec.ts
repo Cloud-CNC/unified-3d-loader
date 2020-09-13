@@ -48,7 +48,12 @@ describe('obj parser', () =>
 {
   it('will parse files with group format', () =>
   {
-    const files = parse(cube.group, 'group-only');
+    let previous = -1;
+    const files = parse(cube.group, 'group-only', progress =>
+    {
+      expect(progress).to.be.greaterThan(previous);
+      previous = progress;
+    });
 
     expect(files).to.have.length(1);
 
@@ -59,7 +64,12 @@ describe('obj parser', () =>
 
   it('will parse files with object format', () =>
   {
-    const files = parse(cube.object, 'object-only');
+    let previous = -1;
+    const files = parse(cube.object, 'object-only', progress =>
+    {
+      expect(progress).to.be.greaterThan(previous);
+      previous = progress;
+    });
 
     expect(files).to.have.length(1);
 
@@ -71,7 +81,12 @@ describe('obj parser', () =>
   it('will parse files with hybrid format', () =>
   {
     //Group
-    const files1 = parse(cube.group, 'hybrid');
+    let previous1 = -1;
+    const files1 = parse(cube.group, 'hybrid', progress =>
+    {
+      expect(progress).to.be.greaterThan(previous1);
+      previous1 = progress;
+    });
 
     expect(files1).to.have.length(1);
 
@@ -80,7 +95,12 @@ describe('obj parser', () =>
     expect(files1[0].vertices).to.eql(cube.vertices);
 
     //Object
-    const files2 = parse(cube.object, 'hybrid');
+    let previous2 = -1;
+    const files2 = parse(cube.object, 'hybrid', progress =>
+    {
+      expect(progress).to.be.greaterThan(previous2);
+      previous2 = progress;
+    });
 
     expect(files2).to.have.length(1);
 
@@ -91,7 +111,12 @@ describe('obj parser', () =>
 
   it('will parse a non-triangular-polygon file', () =>
   {
-    const files = parse(cube.ntp, 'group-only');
+    let previous = -1;
+    const files = parse(cube.ntp, 'group-only', progress =>
+    {
+      expect(progress).to.be.greaterThan(previous);
+      previous = progress;
+    });
 
     expect(files[0].name).to.equal('CUBE');
 
@@ -116,7 +141,12 @@ describe('obj parser', () =>
   {
     const benchy = readFileSync(resolve('assets/obj/benchy.obj'));
 
-    const files = parse(benchy, 'group-only');
+    let previous = -1;
+    const files = parse(benchy, 'group-only', progress =>
+    {
+      expect(progress).to.be.greaterThan(previous);
+      previous = progress;
+    });
 
     expect(files).to.have.length(1);
 
