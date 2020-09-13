@@ -1,6 +1,6 @@
 {
   "name": "unified-3d-loader",
-  "version": "1.1.0-beta.0",
+  "version": "1.1.1-beta.0",
   "description": "Unified 3D file loader. Intended for use as a frontend for triangle-based 3D processing.",
   "type": "module",
   "main": "dist/cjs/index.js",
@@ -48,6 +48,16 @@
     "type": "git",
     "url": "git+https://github.com/Cloud-CNC/unified-3d-loader.git"
   },
+  "keywords": [
+    "3mf",
+    "amf",
+    "ply",
+    "obj",
+    "stl",
+    "file",
+    "loader",
+    "parser"
+  ],
   "author": "Cloud-CNC",
   "license": "MIT",
   "bugs": {
