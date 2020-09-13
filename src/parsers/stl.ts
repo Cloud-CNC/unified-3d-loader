@@ -92,6 +92,9 @@ export const parse = (raw: ArrayBuffer, progress: ProgressEmitter): Mesh<'non-in
         //Parse facets
         const facets = extractGlobal(solid, patterns.facet, new Error('[STL] Failed to parse facets!'));
 
+        //Calculate the progress report interval
+        const progressInterval = Math.round(facets.length / 100);
+
         for (const [facetIndex, [facet]] of facets.entries())
         {
           //Parse normal
@@ -126,7 +129,10 @@ export const parse = (raw: ArrayBuffer, progress: ProgressEmitter): Mesh<'non-in
           }
 
           //Emit progress
-          progress(facetIndex / facets.length);
+          if (facetIndex % progressInterval == 0)
+          {
+            progress(facetIndex / facets.length);
+          }
         }
 
         //Add mesh to meshes
@@ -147,6 +153,9 @@ export const parse = (raw: ArrayBuffer, progress: ProgressEmitter): Mesh<'non-in
 
       //Create a data view for aiding in manipulating binary data
       const dataView = raw instanceof ArrayBuffer ? new DataView(raw) : new DataView(new Uint8Array(raw).buffer);
+
+      //Calculate the progress report interval
+      const progressInterval = Math.round(faces / 100);
 
       //Iterate over each face
       for (let face = 0; face < faces; face++)
@@ -169,7 +178,10 @@ export const parse = (raw: ArrayBuffer, progress: ProgressEmitter): Mesh<'non-in
         //NOTE: Remaining 2 bytes are proprietary and not standardized
 
         //Emit progress
-        progress(face / faces);
+        if (face % progressInterval == 0)
+        {
+          progress(face / faces);
+        }
       }
 
       return [mesh];

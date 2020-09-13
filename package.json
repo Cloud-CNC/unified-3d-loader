@@ -1,6 +1,6 @@
 {
   "name": "unified-3d-loader",
-  "version": "1.1.1-beta.0",
+  "version": "1.1.2-beta.0",
   "description": "Unified 3D file loader. Intended for use as a frontend for triangle-based 3D processing.",
   "type": "module",
   "main": "dist/cjs/index.js",
@@ -36,6 +36,7 @@
     "@typescript-eslint/parser": "^3.10.1",
     "chai": "^4.2.0",
     "eslint": "^7.9.0",
+    "events": "^3.2.0",
     "mocha": "^8.1.3",
     "nyc": "^15.1.0",
     "rollup": "^2.26.11",

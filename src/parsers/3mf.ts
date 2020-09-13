@@ -184,12 +184,15 @@ export const parse = async (raw: ArrayBuffer, progress: ProgressEmitter): Promis
                     if (key4 == 'vertices')
                     {
                       //Iterate over fifth level elements
-                      for (const [vertexIndex, [key5, value5]] of Object.entries(<object>value4).entries())
+                      for (const [key5, value5] of Object.entries(<object>value4))
                       {
                         //Vertex
                         if (key5 == 'vertex')
                         {
-                          for (const vertex of value5)
+                          //Calculate the progress report interval
+                          const progressInterval = Math.round(value5.length / 100);
+
+                          for (const [vertexIndex, vertex] of value5.entries())
                           {
                             //Parse the text
                             const x = scale * parseFloat(vertex['@_x']);
@@ -216,23 +219,29 @@ export const parse = async (raw: ArrayBuffer, progress: ProgressEmitter): Promis
                               //Add the component
                               mesh.vertices.vectors.push(x, y, z);
                             }
+
+                            //Emit progress
+                            if (vertexIndex % progressInterval == 0)
+                            {
+                              progress((vertexIndex / value5.length) / 2);
+                            }
                           }
                         }
-
-                        //Emit progress
-                        progress((vertexIndex / Object.keys(value3).length) / 2);
                       }
                     }
                     //Indices
                     else if (key4 == 'triangles')
                     {
                       //Iterate over fifth level elements
-                      for (const [triangleIndex, [key5, value5]] of Object.entries(<object>value4).entries())
+                      for (const [key5, value5] of Object.entries(<object>value4))
                       {
                         //Triangle
                         if (key5 == 'triangle')
                         {
-                          for (const triangle of value5)
+                          //Calculate the progress report interval
+                          const progressInterval = Math.round(value5.length / 100);
+
+                          for (const [triangleIndex, triangle] of value5.entries())
                           {
                             //Parse the text
                             const v1 = parseInt(triangle['@_v1']);
@@ -241,11 +250,14 @@ export const parse = async (raw: ArrayBuffer, progress: ProgressEmitter): Promis
 
                             //Add the component
                             mesh.vertices.indices.push(v1, v2, v3);
+
+                            //Emit progress
+                            if (triangleIndex % progressInterval == 0)
+                            {
+                              progress(((triangleIndex / value5.length) / 2) + 0.5);
+                            }
                           }
                         }
-
-                        //Emit progress
-                        progress(((triangleIndex / Object.keys(value3).length) / 2) + 0.5);
                       }
                     }
                   }

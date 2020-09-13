@@ -130,12 +130,15 @@ export const parse = async (raw: ArrayBuffer, progress: ProgressEmitter): Promis
                 if (key3 == 'vertices')
                 {
                   //Iterate over fourth level elements
-                  for (const [vertexIndex, [key4, value4]] of Object.entries(<object>value3).entries())
+                  for (const [key4, value4] of Object.entries(<object>value3))
                   {
                     //Vertex
                     if (key4 == 'vertex')
                     {
-                      for (const vertex of value4)
+                      //Calculate the progress report interval
+                      const progressInterval = Math.round(value4.length / 100);
+
+                      for (const [vertexIndex, vertex] of value4.entries())
                       {
                         if (vertex.coordinates != null)
                         {
@@ -147,23 +150,29 @@ export const parse = async (raw: ArrayBuffer, progress: ProgressEmitter): Promis
                           //Add the component
                           mesh.vertices.vectors.push(x, y, z);
                         }
+
+                        //Emit progress
+                        if (vertexIndex % progressInterval == 0)
+                        {
+                          progress((vertexIndex / value4.length) / 2);
+                        }
                       }
                     }
-
-                    //Emit progress
-                    progress((vertexIndex / Object.keys(value3).length) / 2);
                   }
                 }
                 //Indices
                 else if (key3 == 'volume')
                 {
                   //Iterate over fourth level elements
-                  for (const [triangleIndex, [key4, value4]] of Object.entries(<object>value3).entries())
+                  for (const [key4, value4] of Object.entries(<object>value3))
                   {
                     if (key4 == 'triangle')
                     {
+                      //Calculate the progress report interval
+                      const progressInterval = Math.round(value4.length / 100);
+
                       //Component
-                      for (const component of value4)
+                      for (const [triangleIndex, component] of value4.entries())
                       {
                         //Scale
                         const v1 = component.v1;
@@ -172,11 +181,14 @@ export const parse = async (raw: ArrayBuffer, progress: ProgressEmitter): Promis
 
                         //Add the component
                         mesh.vertices.indices.push(v1, v2, v3);
+
+                        //Emit progress
+                        if (triangleIndex % progressInterval == 0)
+                        {
+                          progress(((triangleIndex / value4.length) / 2) + 0.5);
+                        }
                       }
                     }
-
-                    //Emit progress
-                    progress(((triangleIndex / Object.keys(value3).length) / 2) + 0.5);
                   }
                 }
               }
