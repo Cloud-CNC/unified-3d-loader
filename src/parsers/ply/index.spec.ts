@@ -52,9 +52,11 @@ describe('ply parser', () =>
     let previous = -1;
     const files = parse(cube.ascii, progress =>
     {
-      expect(progress).to.be.greaterThan(previous);
+      expect(progress).to.be.gte(previous);
       previous = progress;
     });
+
+    expect(previous).to.equal(1);
 
     expect(files).to.have.length(1);
 
@@ -67,9 +69,11 @@ describe('ply parser', () =>
     let previous = -1;
     const files = parse(cube.binaryBE, progress =>
     {
-      expect(progress).to.be.greaterThan(previous);
+      expect(progress).to.be.gte(previous);
       previous = progress;
     });
+
+    expect(previous).to.equal(1);
 
     expect(files).to.have.length(1);
 
@@ -83,9 +87,11 @@ describe('ply parser', () =>
     let previous = -1;
     const files = parse(cube.binaryLE, progress =>
     {
-      expect(progress).to.be.greaterThan(previous);
+      expect(progress).to.be.gte(previous);
       previous = progress;
     });
+
+    expect(previous).to.equal(1);
 
     expect(files).to.have.length(1);
 
@@ -99,9 +105,11 @@ describe('ply parser', () =>
     let previous = -1;
     const files = parse(cube.ntp, progress =>
     {
-      expect(progress).to.be.greaterThan(previous);
+      expect(progress).to.be.gte(previous);
       previous = progress;
     });
+
+    expect(previous).to.equal(1);
 
     expect(files).to.have.length(1);
 
@@ -131,9 +139,11 @@ describe('ply parser', () =>
     let previous = -1;
     const files = parse(benchy, progress =>
     {
-      expect(progress).to.be.greaterThan(previous);
+      expect(progress).to.be.gte(previous);
       previous = progress;
     });
+
+    expect(previous).to.equal(1);
 
     expect(files).to.have.length(1);
 

@@ -52,6 +52,9 @@ export const parse = (raw: ArrayBuffer, format: ObjFormats, progress: ProgressEm
   //Parse lines
   const lines = extractGlobal(file, patterns.line, new Error('[OBJ] Failed to parse lines!'));
 
+  //Calculate the progress report interval
+  const progressInterval = lines.length < 100 ? 1 : Math.round(lines.length / 100);
+
   for (const [lineIndex, [line, type]] of lines.entries())
   {
     switch (type)
@@ -142,8 +145,14 @@ export const parse = (raw: ArrayBuffer, format: ObjFormats, progress: ProgressEm
     }
 
     //Emit progress
-    progress(lineIndex / lines.length);
+    if (lineIndex % progressInterval == 0)
+    {
+      progress((lineIndex + 1) / lines.length);
+    }
   }
+
+  //Emit final progress
+  progress(1);
 
   return meshes;
 };

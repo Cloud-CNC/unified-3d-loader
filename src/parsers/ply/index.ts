@@ -102,8 +102,13 @@ export const parse = (raw: ArrayBuffer, progress: ProgressEmitter): Mesh<'none',
       //Split lines and parse
       const lines = extractGlobal(body, patterns.line, new Error('[PLY] Failed to parse file body!'));
 
+      //Get line count
+      const lineCount = Object.keys(lines).length;
+
+      //Calculate the progress report interval
+      const progressInterval = lineCount < 100 ? 1 : Math.round(lineCount / 100);
+
       //Add vertices and indices
-      const lineLength = Object.keys(lines).length;
       for (const [i, [line]] of lines.entries())
       {
         //Add vertice
@@ -137,7 +142,10 @@ export const parse = (raw: ArrayBuffer, progress: ProgressEmitter): Mesh<'none',
         }
 
         //Emit progress
-        progress(i / lineLength);
+        if (i % progressInterval == 0)
+        {
+          progress((i + 1) / lineCount);
+        }
       }
 
       break;
@@ -197,8 +205,13 @@ export const parse = (raw: ArrayBuffer, progress: ProgressEmitter): Mesh<'none',
         offset += elementSize;
       }
 
-      //Iterate over vertices
+      //Calculate last vertice position
       const verticeMax = verticeOffset + (12 * verticeCount);
+
+      //Calculate the vertice progress report interval
+      const progressInterval = verticeCount < 100 ? 12 : (12 * Math.round(verticeCount / 100));
+
+      //Iterate over vertices
       for (let i = verticeOffset; i < verticeMax; i += 12)
       {
         const x = dataView.getFloat32(i, littleEndian);
@@ -208,8 +221,14 @@ export const parse = (raw: ArrayBuffer, progress: ProgressEmitter): Mesh<'none',
         mesh.vertices.vectors.push(x, y, z);
 
         //Emit progress
-        progress((i / verticeMax) / 2);
+        if (i % (progressInterval) == 0)
+        {
+          progress(((i - verticeOffset) / (12 * verticeCount)) / 2);
+        }
       }
+
+      //Calculate the face progress report interval
+      const faceProgressInterval = faceCount < 100 ? 1 : Math.round(faceCount / 100);
 
       //Iterate over faces (Dynamic iteration width controlled by number of vertices in each face)
       let offset2 = faceOffset;
@@ -232,12 +251,18 @@ export const parse = (raw: ArrayBuffer, progress: ProgressEmitter): Mesh<'none',
         offset2 += 1 + (4 * count);
 
         //Emit progress
-        progress(((i / faceCount) / 2) + 0.5);
+        if (i % faceProgressInterval == 0)
+        {
+          progress((((i + 1) / faceCount) / 2) + 0.5);
+        }
       }
 
       break;
     }
   }
+
+  //Emit final progress
+  progress(1);
 
   return [mesh];
 };

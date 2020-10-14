@@ -51,9 +51,11 @@ describe('obj parser', () =>
     let previous = -1;
     const files = parse(cube.group, 'group-only', progress =>
     {
-      expect(progress).to.be.greaterThan(previous);
+      expect(progress).to.be.gte(previous);
       previous = progress;
     });
+
+    expect(previous).to.equal(1);
 
     expect(files).to.have.length(1);
 
@@ -67,9 +69,11 @@ describe('obj parser', () =>
     let previous = -1;
     const files = parse(cube.object, 'object-only', progress =>
     {
-      expect(progress).to.be.greaterThan(previous);
+      expect(progress).to.be.gte(previous);
       previous = progress;
     });
+
+    expect(previous).to.equal(1);
 
     expect(files).to.have.length(1);
 
@@ -84,9 +88,11 @@ describe('obj parser', () =>
     let previous1 = -1;
     const files1 = parse(cube.group, 'hybrid', progress =>
     {
-      expect(progress).to.be.greaterThan(previous1);
+      expect(progress).to.be.gte(previous1);
       previous1 = progress;
     });
+
+    expect(previous1).to.equal(1);
 
     expect(files1).to.have.length(1);
 
@@ -98,9 +104,11 @@ describe('obj parser', () =>
     let previous2 = -1;
     const files2 = parse(cube.object, 'hybrid', progress =>
     {
-      expect(progress).to.be.greaterThan(previous2);
+      expect(progress).to.be.gte(previous2);
       previous2 = progress;
     });
+
+    expect(previous2).to.equal(1);
 
     expect(files2).to.have.length(1);
 
@@ -114,9 +122,11 @@ describe('obj parser', () =>
     let previous = -1;
     const files = parse(cube.ntp, 'group-only', progress =>
     {
-      expect(progress).to.be.greaterThan(previous);
+      expect(progress).to.be.gte(previous);
       previous = progress;
     });
+
+    expect(previous).to.equal(1);
 
     expect(files[0].name).to.equal('CUBE');
 
@@ -144,9 +154,11 @@ describe('obj parser', () =>
     let previous = -1;
     const files = parse(benchy, 'group-only', progress =>
     {
-      expect(progress).to.be.greaterThan(previous);
+      expect(progress).to.be.gte(previous);
       previous = progress;
     });
+
+    expect(previous).to.equal(1);
 
     expect(files).to.have.length(1);
 

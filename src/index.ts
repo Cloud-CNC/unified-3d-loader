@@ -22,7 +22,7 @@ export {FileFormats} from './types';
  * A higher value indicates more time is usually taken
  * by the loader and less time by the post-processing
  */
-const loaderBias = 0.7;
+const loaderBias = 0.9;
 
 /**
  * The bias of the post-processing progress
@@ -95,7 +95,10 @@ export class Unified3dLoader extends EventEmitter
      */
     const handleLoaderProgress = (progress: number) =>
     {
-      this.emit('progress', (progress * loaderBias));
+      //Normalize
+      progress = Math.round(100 * (progress * loaderBias));
+
+      this.emit('progress', progress);
     };
 
     /**
@@ -153,7 +156,7 @@ export class Unified3dLoader extends EventEmitter
         }
 
         //Emit progress
-        this.emit('progress', ((meshIndex / meshes.length) * postProcessBias) + loaderBias);
+        this.emit('progress', 100 * ((((meshIndex + 1) / meshes.length) * postProcessBias) + loaderBias));
       }
 
       return meshes;

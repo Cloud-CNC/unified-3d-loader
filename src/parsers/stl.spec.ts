@@ -85,9 +85,11 @@ describe('stl parser', () =>
     let previous = -1;
     const file = parse(cube.ascii, progress =>
     {
-      expect(progress).to.be.greaterThan(previous);
+      expect(progress).to.be.gte(previous);
       previous = progress;
     });
+
+    expect(previous).to.equal(1);
 
     expect(file).to.have.length(1);
 
@@ -102,9 +104,11 @@ describe('stl parser', () =>
     let previous = -1;
     const file = parse(cube.binary, progress =>
     {
-      expect(progress).to.be.greaterThan(previous);
+      expect(progress).to.be.gte(previous);
       previous = progress;
     });
+
+    expect(previous).to.equal(1);
 
     expect(file).to.have.length(1);
 
@@ -121,9 +125,11 @@ describe('stl parser', () =>
     let previous = -1;
     const files = parse(benchy, progress =>
     {
-      expect(progress).to.be.greaterThan(previous);
+      expect(progress).to.be.gte(previous);
       previous = progress;
     });
+
+    expect(previous).to.equal(1);
 
     expect(files).to.have.length(1);
 

@@ -33,6 +33,12 @@ const main = async () =>
   //Instantiate a new loader
   const loader = new Unified3dLoader();
 
+  //Progress logger (Ranges from 0 to 100)
+  loader.on('progress', percent =>
+  {
+    console.log(`Progress: ${percent}%`);
+  });
+
   //Load a file (in indexed mode)
   const indexedObjects = await loader.load(/* <ArrayBuffer> */, FileFormats.STL);
 

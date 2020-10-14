@@ -52,9 +52,11 @@ describe('amf parser', () =>
     let previous = -1;
     const files = await parse(cube.ascii, progress =>
     {
-      expect(progress).to.be.greaterThan(previous);
+      expect(progress).to.be.gte(previous);
       previous = progress;
     });
+
+    expect(previous).to.equal(1);
 
     expect(files).to.have.length(1);
 
@@ -89,9 +91,11 @@ describe('amf parser', () =>
     let previous = -1;
     const files = await parse(cube.big, progress =>
     {
-      expect(progress).to.be.greaterThan(previous);
+      expect(progress).to.be.gte(previous);
       previous = progress;
     });
+
+    expect(previous).to.equal(1);
 
     expect(files).to.have.length(1);
 
@@ -127,9 +131,11 @@ describe('amf parser', () =>
     let previous = -1;
     const files = await parse(cube.compressed, progress =>
     {
-      expect(progress).to.be.greaterThan(previous);
+      expect(progress).to.be.gte(previous);
       previous = progress;
     });
+
+    expect(previous).to.equal(1);
 
     expect(files).to.have.length(1);
 
@@ -225,9 +231,11 @@ describe('amf parser', () =>
     let previous = -1;
     const files = await parse(benchy, progress =>
     {
-      expect(progress).to.be.greaterThan(previous);
+      expect(progress).to.be.gte(previous);
       previous = progress;
     });
+
+    expect(previous).to.equal(1);
 
     expect(files).to.have.length(1);
 

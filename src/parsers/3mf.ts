@@ -113,17 +113,16 @@ export const parse = async (raw: ArrayBuffer, progress: ProgressEmitter): Promis
       //Use the identity matrix (No transformations)
       let transformationMatrix;
 
-      //Iterate over top-level elements
+      //Iterate over top level elements
       for (const [key1, value1] of Object.entries(parsed.model))
       {
         if (key1 == 'build')
         {
-          //Iterate over secondary-level elements
+          //Iterate over second level elements
           for (const [key2, value2] of Object.entries(<object>value1))
           {
             //Transform
-            if (key2 == 'item' &&
-              value2['@_transform'] != null)
+            if (key2 == 'item' && value2['@_transform'] != null)
             {
               //Parse transform matrix
               const matrixStrings = extractGlobal(value2['@_transform'], /([+-]?(?:\d*\.)?\d+(?:[eE][+-]?\d+)?)/g, new Error('[3MF] Failed to parse transformation matrix!'));
@@ -150,12 +149,12 @@ export const parse = async (raw: ArrayBuffer, progress: ProgressEmitter): Promis
         }
       }
 
-      //Iterate over top-level elements
+      //Iterate over top level elements
       for (const [key1, value1] of Object.entries(parsed.model))
       {
         if (key1 == 'resources')
         {
-          //Iterate over secondary-level elements
+          //Iterate over second level elements
           for (const [key2, value2] of Object.entries(<object>value1))
           {
             //Mesh
@@ -171,7 +170,7 @@ export const parse = async (raw: ArrayBuffer, progress: ProgressEmitter): Promis
                 }
               };
 
-              //Iterate over secondary-level elements
+              //Iterate over third level elements
               for (const [key3, value3] of Object.entries(<object>value2))
               {
                 //Mesh
@@ -190,7 +189,7 @@ export const parse = async (raw: ArrayBuffer, progress: ProgressEmitter): Promis
                         if (key5 == 'vertex')
                         {
                           //Calculate the progress report interval
-                          const progressInterval = Math.round(value5.length / 100);
+                          const progressInterval = value5.length < 100 ? 1 : Math.round(value5.length / 100);
 
                           for (const [vertexIndex, vertex] of value5.entries())
                           {
@@ -223,7 +222,7 @@ export const parse = async (raw: ArrayBuffer, progress: ProgressEmitter): Promis
                             //Emit progress
                             if (vertexIndex % progressInterval == 0)
                             {
-                              progress((vertexIndex / value5.length) / 2);
+                              progress(((vertexIndex + 1) / value5.length) / 2);
                             }
                           }
                         }
@@ -239,7 +238,7 @@ export const parse = async (raw: ArrayBuffer, progress: ProgressEmitter): Promis
                         if (key5 == 'triangle')
                         {
                           //Calculate the progress report interval
-                          const progressInterval = Math.round(value5.length / 100);
+                          const progressInterval = value5.length < 100 ? 1 : Math.round(value5.length / 100);
 
                           for (const [triangleIndex, triangle] of value5.entries())
                           {
@@ -254,7 +253,7 @@ export const parse = async (raw: ArrayBuffer, progress: ProgressEmitter): Promis
                             //Emit progress
                             if (triangleIndex % progressInterval == 0)
                             {
-                              progress(((triangleIndex / value5.length) / 2) + 0.5);
+                              progress((((triangleIndex + 1) / value5.length) / 2) + 0.5);
                             }
                           }
                         }
@@ -275,6 +274,9 @@ export const parse = async (raw: ArrayBuffer, progress: ProgressEmitter): Promis
       }
     }
   }
+
+  //Emit final progress
+  progress(1);
 
   return meshes;
 };

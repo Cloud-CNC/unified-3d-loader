@@ -101,7 +101,7 @@ export const parse = async (raw: ArrayBuffer, progress: ProgressEmitter): Promis
         }
       }
 
-      //Iterate over top-level elements
+      //Iterate over top level elements
       for (const [key1, value1] of Object.entries(<object>parsed.amf))
       {
         if (key1 == 'object')
@@ -117,7 +117,7 @@ export const parse = async (raw: ArrayBuffer, progress: ProgressEmitter): Promis
             metadata: {}
           };
 
-          //Iterate over secondary-level elements
+          //Iterate over second level elements
           for (const [key2, value2] of Object.entries(<object>value1))
           {
             //Mesh
@@ -136,7 +136,7 @@ export const parse = async (raw: ArrayBuffer, progress: ProgressEmitter): Promis
                     if (key4 == 'vertex')
                     {
                       //Calculate the progress report interval
-                      const progressInterval = Math.round(value4.length / 100);
+                      const progressInterval = value4.length < 100 ? 1 : Math.round(value4.length / 100);
 
                       for (const [vertexIndex, vertex] of value4.entries())
                       {
@@ -154,7 +154,7 @@ export const parse = async (raw: ArrayBuffer, progress: ProgressEmitter): Promis
                         //Emit progress
                         if (vertexIndex % progressInterval == 0)
                         {
-                          progress((vertexIndex / value4.length) / 2);
+                          progress(((vertexIndex + 1) / value4.length) / 2);
                         }
                       }
                     }
@@ -169,7 +169,7 @@ export const parse = async (raw: ArrayBuffer, progress: ProgressEmitter): Promis
                     if (key4 == 'triangle')
                     {
                       //Calculate the progress report interval
-                      const progressInterval = Math.round(value4.length / 100);
+                      const progressInterval = value4.length < 100 ? 1 : Math.round(value4.length / 100);
 
                       //Component
                       for (const [triangleIndex, component] of value4.entries())
@@ -185,7 +185,7 @@ export const parse = async (raw: ArrayBuffer, progress: ProgressEmitter): Promis
                         //Emit progress
                         if (triangleIndex % progressInterval == 0)
                         {
-                          progress(((triangleIndex / value4.length) / 2) + 0.5);
+                          progress((((triangleIndex + 1) / value4.length) / 2) + 0.5);
                         }
                       }
                     }
@@ -204,6 +204,9 @@ export const parse = async (raw: ArrayBuffer, progress: ProgressEmitter): Promis
       }
     }
   }
+
+  //Emit final progress
+  progress(1);
 
   return meshes;
 };

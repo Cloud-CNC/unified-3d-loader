@@ -70,7 +70,7 @@ describe('main entry file', () =>
     let previous = -1;
     loader.on('progress', progress =>
     {
-      expect(progress).to.be.greaterThan(previous);
+      expect(progress).to.be.gte(previous);
       previous = progress;
     });
 
@@ -80,6 +80,8 @@ describe('main entry file', () =>
         vertices: true
       }
     });
+
+    expect(previous).to.equal(100);
 
     expect(objects).to.have.length(1);
 
@@ -151,7 +153,7 @@ describe('main entry file', () =>
     let previous = -1;
     loader.on('progress', progress =>
     {
-      expect(progress).to.be.greaterThan(previous);
+      expect(progress).to.be.gte(previous);
       previous = progress;
     });
 
@@ -161,6 +163,8 @@ describe('main entry file', () =>
         vertices: false
       }
     });
+
+    expect(previous).to.equal(100);
 
     expect(objects).to.have.length(1);
 

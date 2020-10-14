@@ -93,7 +93,7 @@ export const parse = (raw: ArrayBuffer, progress: ProgressEmitter): Mesh<'non-in
         const facets = extractGlobal(solid, patterns.facet, new Error('[STL] Failed to parse facets!'));
 
         //Calculate the progress report interval
-        const progressInterval = Math.round(facets.length / 100);
+        const progressInterval = facets.length < 100 ? 1 : Math.round(facets.length / 100);
 
         for (const [facetIndex, [facet]] of facets.entries())
         {
@@ -131,13 +131,16 @@ export const parse = (raw: ArrayBuffer, progress: ProgressEmitter): Mesh<'non-in
           //Emit progress
           if (facetIndex % progressInterval == 0)
           {
-            progress(facetIndex / facets.length);
+            progress((facetIndex + 1) / facets.length);
           }
         }
 
         //Add mesh to meshes
         meshes.push(mesh);
       }
+
+      //Emit final progress
+      progress(1);
 
       return meshes;
     }
@@ -155,7 +158,7 @@ export const parse = (raw: ArrayBuffer, progress: ProgressEmitter): Mesh<'non-in
       const dataView = raw instanceof ArrayBuffer ? new DataView(raw) : new DataView(new Uint8Array(raw).buffer);
 
       //Calculate the progress report interval
-      const progressInterval = Math.round(faces / 100);
+      const progressInterval = faces < 100 ? 1 : Math.round(faces / 100);
 
       //Iterate over each face
       for (let face = 0; face < faces; face++)
@@ -180,9 +183,12 @@ export const parse = (raw: ArrayBuffer, progress: ProgressEmitter): Mesh<'non-in
         //Emit progress
         if (face % progressInterval == 0)
         {
-          progress(face / faces);
+          progress((face + 1) / faces);
         }
       }
+
+      //Emit final progress
+      progress(1);
 
       return [mesh];
     }
