@@ -1,6 +1,6 @@
 {
   "name": "unified-3d-loader",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "description": "Unified 3D file loader. Intended for use as a frontend for triangle-based 3D processing.",
   "type": "module",
   "main": "dist/cjs/index.js",
