@@ -3,13 +3,14 @@
   "version": "1.1.4",
   "description": "Unified 3D file loader. Intended for use as a frontend for triangle-based 3D processing.",
   "type": "module",
-  "main": "dist/cjs/index.js",
-  "module": "dist/es/index.js",
   "types": "dist/es/index.d.ts",
   "files": [
-    "src/*",
     "dist/*"
   ],
+  "exports": {
+    "import": "./dist/es/index.js",
+    "require": "./dist/cjs/index.js"
+  },
   "scripts": {
     "build": "rollup -c",
     "coverage": "nyc --reporter=lcov npm run test",
